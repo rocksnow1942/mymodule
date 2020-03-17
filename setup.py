@@ -11,7 +11,7 @@ setuptools.setup(
     description="Modules for my scripts.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="",
+    url="https://github.com/rocksnow1942/mymodule",
     packages=setuptools.find_packages(), # or can manually enter.
     classifiers=[
         "Programming Language :: Python :: 3",
