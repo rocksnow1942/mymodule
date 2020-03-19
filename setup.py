@@ -21,6 +21,7 @@ setuptools.setup(
     entry_points = """
         [console_scripts]
         ok=cli:menu
+        tol=cli:toollist
     """,
     install_requires=['psutil','click','colorama','terminaltables'],
     python_requires='>=3.6',

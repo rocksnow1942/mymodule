@@ -61,16 +61,14 @@ class MyCLI(click.MultiCommand):
 # menu = MyCLI(help="Entry Point for other Commands",invoke_without_command=True)
 
 @click.group(cls=MyCLI,)
-# @click.option('--','-')
 @click.pass_context
 def plugins(ctx):
-    # print(dir(ctx))
-    # print(ctx._depth)
+   
     pass 
 
-@plugins.command()
-def cl():
-    """
-    wowo
-    """
-    print('hello')
+# @plugins.command()
+# def cl():
+#     """
+#     wowo
+#     """
+#     print('hello')

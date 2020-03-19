@@ -3,7 +3,7 @@ from colorama import init, Fore,Back,Style
 from textwrap import TextWrapper
 from terminaltables import SingleTable
 
-# init()
+TermRow, TermCol = [int(i) for i in os.popen('stty size', 'r').read().split()]    
 
 class ColorText():
     """
@@ -43,17 +43,22 @@ class ColorText():
 
 
 class TableDisplay():
-    def __init__(self,color):
-        row, col = os.popen('stty size', 'r').read().split()
-        self.col = int(col)
+    def __init__(self,color=ColorText(mapping={"[]":"fC",("<g>","</g>") : "fG",("<a>","</a>"):"bR","{}":"bB"})):
+        self.col = (TermCol)
         self.color=color
 
-    def format(self,title,text):
+    def format(self,title="",text=[]):
+        """
+        text = [ [ row 1 [ line1, line2 ] ], [row 2 [ lines]] ]
+        if text is a string, then convert to single row, but respect the \n
+        """
+        if isinstance(text,str):
+            text = [[i for i in text.split('\n')]]
         tw = TextWrapper(fix_sentence_endings=True,width=self.col-4)
         table_data = [ [self.color("\n".join(tw.fill(j,) for j in i))] for i in text]
         table = SingleTable(table_data,self.color(title))
         table.inner_row_border = True
         return table.table
 
-    def __call__(self,title,text):
+    def __call__(self,title="",text=[]):
         return self.format(title,text)
