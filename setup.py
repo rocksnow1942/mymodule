@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="huik-module", # Replace with your own username this is for PIP install, not the real python package name. the real name will be example_pkg
-    version="0.0.2",
+    version="0.0.3",
     author="Hui Kang",
     author_email="rocksnow1942@gmail.com",
     description="Modules for my scripts.",
