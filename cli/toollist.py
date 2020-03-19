@@ -3,8 +3,12 @@ import os
 import json
 import subprocess
 from cli.utils import TermRow, TermCol, TableDisplay
+from mymodule import mkdirs
 
-TL_CONFIG = os.path.join(os.path.dirname(__file__), 'conf','tools.json')
+TL_FOLDER = os.path.join(os.path.dirname(__file__), 'conf')
+TL_CONFIG = os.path.join(TL_FOLDER,'tools.json')
+
+mkdirs(TL_FOLDER)
 
 if not os.path.isfile(TL_CONFIG):
     _=open(TL_CONFIG,'wt')

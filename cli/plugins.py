@@ -65,10 +65,3 @@ class MyCLI(click.MultiCommand):
 def plugins(ctx):
    
     pass 
-
-# @plugins.command()
-# def cl():
-#     """
-#     wowo
-#     """
-#     print('hello')

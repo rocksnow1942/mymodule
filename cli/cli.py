@@ -6,6 +6,7 @@ from cli.toollist import toollist
 combine modules together
 """
 
-menu = click.CommandCollection(sources=[plugins,toollist])
+menu = click.CommandCollection(sources=[plugins,toollist],
+help="Main Entrance for tools.")
 
 
