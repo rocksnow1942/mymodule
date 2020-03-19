@@ -18,7 +18,11 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=['psutil'],
+    entry_points = """
+        [console_scripts]
+        ok=cli:menu
+    """,
+    install_requires=['psutil','click','colorama','terminaltables'],
     python_requires='>=3.6',
 )
 
