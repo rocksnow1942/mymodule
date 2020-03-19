@@ -1,13 +1,27 @@
 import click
 import requests
 from cli.utils import ColorText,TableDisplay
+import json 
+import os
 
+APIs = os.path.join(os.path.dirname(__file__), 'api.json')
+if not os.path.isfile(APIs):
+    _=open(APIs,'wt')
+    _.write("{}")
+    _.close()
 
+with open(APIs,'rt') as f:
+    _data = json.load(f)
+    COL_API_KEY=_data.get("COL_API_KEY",None)
+    MED_API_KEY=_data.get("MED_API_KEY",None)
+    URBAN_API_KEY=_data.get("URBAN_API_KEY",None)
 
 def lookupMW(word,limit):
-    url1=f"https://www.dictionaryapi.com/api/v3/references/collegiate/json/{word}?key=51697108-9265-4243-808b-27710ef1937a"
-    url2=f"https://www.dictionaryapi.com/api/v3/references/medical/json/{word}?key=4e9ac5ef-b27a-44e0-a416-dc9ce902267b"
+    url1=f"https://www.dictionaryapi.com/api/v3/references/collegiate/json/{word}?key={COL_API_KEY}"
+    url2=f"https://www.dictionaryapi.com/api/v3/references/medical/json/{word}?key={MED_API_KEY}"
     try:
+        if COL_API_KEY is None or (MED_API_KEY is None):
+            raise ValueError ("Missing API key for M-W dictionary. Run def --config to setup.")
         r1 = requests.request("GET", url1, ).json()
         r2 = requests.request("GET", url2, ).json()
         def process(r):
@@ -29,9 +43,6 @@ def lookupMW(word,limit):
         return e
 
 
-
-
-
 def lookupUrban(word,limit):
     """
     look up word on urban dictionary, export a upper limit
@@ -40,9 +51,11 @@ def lookupUrban(word,limit):
     querystring = {"term":word}
     headers = {
         'x-rapidapi-host': "mashape-community-urban-dictionary.p.rapidapi.com",
-        'x-rapidapi-key': "939867f4a7mshb9a0332b3f15521p1c6740jsn27072326be60"
+        'x-rapidapi-key': URBAN_API_KEY
         }
     try:
+        if URBAN_API_KEY is None:
+            raise ValueError ("No API key for urban dictionary. Run def --config to setup.")
         response = requests.request("GET", url, headers=headers, params=querystring)
         r=response.json()
         result = []
@@ -55,17 +68,34 @@ def lookupUrban(word,limit):
     except Exception as e:
         return e
 
+def run_config():
+    ck = click.prompt("Enter Key for M-W collegiate dictionary",default=COL_API_KEY)
+    mk = click.prompt("Enter Key for M-W medical dictionary",default=MED_API_KEY)
+    uk = click.prompt("Enter Key for Urban dictionary",default=URBAN_API_KEY)
+    data = dict(COL_API_KEY=ck,MED_API_KEY=mk,URBAN_API_KEY=uk)
+    click.echo('You have entered these keys:')
+    click.echo(json.dumps(data,indent=4),)
+    if click.confirm('Do you want to save?',abort=True,default=True):
+        with open(APIs,'wt') as f:
+            json.dump(data,f)
+
+    click.echo('API keys are saved.')
+
 @click.command()
 @click.argument("word",nargs=-1)
 @click.option('-u','--urban','-urban','dictionary',flag_value="urban",default=False,help="Use Urban Dictionary")
 @click.option('-mw','--mw','-m','-mw','dictionary',flag_value="mw",default=True,help="Use M-W Dictionary")
 @click.option("--dictionary",'-d',type=click.Choice(['mw',"urban"],case_sensitive=False),default='mw',help="Select M-W or Urban Dictionary")
 @click.option("--limit",'-l',default=5,help="Limit explanation entries")
+@click.option("--config",is_flag=True,help="Configure Dictionary API keys")
 @click.pass_context
-def cli(ctx,word,limit,dictionary):
+def cli(ctx,word,limit,dictionary,config):
     """
     Urban Dictionary or Merriam-Webster Dictionary.
     """
+    if config:
+        run_config()
+        ctx.exit()
     if not word:
         click.echo(ctx.get_help())
         word = click.prompt('Please enter a word', type=str)

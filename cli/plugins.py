@@ -19,8 +19,8 @@ class MyCLI(click.MultiCommand):
     def get_command(self, ctx, name):
         if name in self.commandList:
             return self.commandList[name]
-        ns = {}
         fn = os.path.join(plugin_folder, name + '.py')
+        ns = {'__file__':fn}
         if os.path.isfile(fn):
             with open(fn) as f:
                 # code = compile(f.read(), fn, 'exec')
