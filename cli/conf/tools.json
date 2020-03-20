@@ -1,1 +1,6 @@
-{}
+{
+  "1": {
+    "name": "upload to pip",
+    "command": "twine upload --skip-exist dist/*"
+  }
+}

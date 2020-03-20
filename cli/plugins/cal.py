@@ -1,7 +1,6 @@
 import click
 import math
 import re
-from colorama import init, Fore,Back,Style
 from cli.utils import ColorText,TableDisplay
 # init()
 

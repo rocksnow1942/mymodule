@@ -1,7 +1,8 @@
 import click
 import os
 
-plugin_folder = os.path.join(os.path.dirname(__file__), 'commands')
+
+plugin_folder = os.path.join(os.path.dirname(__file__), 'plugins')
 
 class MyCLI(click.MultiCommand):
     """
@@ -12,7 +13,9 @@ class MyCLI(click.MultiCommand):
         rv = list(self.commandList.keys())
         for filename in os.listdir(plugin_folder):
             if filename.endswith('.py'):
-                rv.append(filename[:-3])
+                temp = filename[:-3]
+                if temp not in rv:
+                    rv.append(temp)
         rv.sort()
         return rv
 
@@ -58,10 +61,34 @@ class MyCLI(click.MultiCommand):
 
         return decorator
 
-# menu = MyCLI(help="Entry Point for other Commands",invoke_without_command=True)
 
-@click.group(cls=MyCLI,)
-@click.pass_context
-def plugins(ctx):
-   
+@click.group(cls=MyCLI)
+def _plugins():
     pass 
+
+
+@_plugins.command()
+@click.option('--show-folder',"-sf",default=False, is_flag=True,help="Open plugins folder.")
+@click.option('--install',"-i","file",default=None,type=click.Path(exists=True,dir_okay=False), help="Install to plugins folder.") #
+@click.pass_context
+def plugins(ctx,show_folder,file):
+    """
+    Manage plugins folder
+    """
+    if show_folder:
+        import subprocess
+        click.echo(f"Plugins stored in: {plugin_folder}")
+        subprocess.run(f"cd {plugin_folder}\nopen .\n",shell=True)
+        return 
+    if file:
+        from cli.cli import menu 
+        from shutil import copyfile
+        cmds = (menu.list_commands(ctx))
+        click.echo(f"Current commands: {cmds}")
+        name=click.prompt("Enter a different name for your plugin")
+        if name in cmds:
+            click.echo(f'!Failed. <{name}> is alread in use.')
+            ctx.exit()
+        copyfile(file,os.path.join(plugin_folder,f"{name}.py"))
+        click.echo(f"Command <{name}> installed to plugins folder.")
+        return

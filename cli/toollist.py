@@ -58,6 +58,13 @@ def tl(ctx):
             click.echo(td(title="",text=[[f"<a> '{key}' not in menu.</a>"]]))
             return
 
+@tl.command()
+def test():
+    p=subprocess.Popen(["twine", "upload" ,"dist/*"],stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT, encoding='utf-8',)
+    # o = p.communicate("__token__\n")
+    # p.communicate("Fagoasdf\n")
+    # print(o)
 
 @tl.command()
 @click.option('-a','--add','ops',flag_value='add', help="Add new command.")

@@ -1,10 +1,12 @@
 import click
+import os
 import requests
 from cli.utils import ColorText,TableDisplay
 import json 
-import os
+import re
 
-APIs = os.path.join(os.path.dirname(__file__), 'api.json')
+
+APIs = os.path.join(os.path.dirname(__file__),'conf','api.json')
 if not os.path.isfile(APIs):
     _=open(APIs,'wt')
     _.write("{}")
@@ -81,7 +83,11 @@ def run_config():
 
     click.echo('API keys are saved.')
 
-@click.command()
+@click.group()
+def dictionary():
+    pass
+
+@dictionary.command('def')
 @click.argument("word",nargs=-1)
 @click.option('-u','--urban','-urban','dictionary',flag_value="urban",default=False,help="Use Urban Dictionary")
 @click.option('-mw','--mw','-m','-mw','dictionary',flag_value="mw",default=True,help="Use M-W Dictionary")
@@ -89,9 +95,9 @@ def run_config():
 @click.option("--limit",'-l',default=5,help="Limit explanation entries")
 @click.option("--config",is_flag=True,help="Configure Dictionary API keys")
 @click.pass_context
-def cli(ctx,word,limit,dictionary,config):
+def _def(ctx,word,limit,dictionary,config):
     """
-    Urban Dictionary or Merriam-Webster Dictionary.
+    Dictionary. Support Urban Dict / M-W Dict.
     """
     if config:
         run_config()
@@ -116,3 +122,5 @@ def cli(ctx,word,limit,dictionary,config):
         click.echo("")
         click.echo(bkcolor(f'<alert>!Unable to find online definition. \n <{result}> </alert>'))
         click.echo("")
+
+
