@@ -17,7 +17,6 @@ if not os.path.isfile(TL_CONFIG):
 
 td = TableDisplay()
 
-
 def readData():
     with open(TL_CONFIG,'rt') as f:
         return json.load(f)
@@ -28,6 +27,21 @@ def displayMenu(data):
         dis.append(f" >><g> [ {k} ] </g><< {data[k]['name']}  ")
     click.echo(td(title= "[>>Tools Menu<<]", text=[dis]))
 
+def run_tool(key,data):
+    """
+    key is the key to command dictionary sotred in data dict. 
+    data dict: key:{name: ... , command: ...}
+    """
+    if key in data:
+        name = data[key]['name']
+        command = data[key]['command']
+        click.echo(td(text=f"Run [{name}]\n>>> {{{command}}}"))
+        subprocess.run(command,shell=True)
+    else:
+        click.echo(td(title="",text=[[f"<a> '{key}' not in menu.</a>"]]))
+        return
+
+
 @click.group(invoke_without_command=True)
 @click.pass_context
 def toollist(ctx):
@@ -37,6 +51,17 @@ def toollist(ctx):
     """
     if ctx._depth == 2:
         tl()
+
+
+@toollist.command()
+@click.argument('sele',nargs=1,)
+def rt(sele):
+    """
+    Run option from tool list.
+    """
+    data = readData()
+    return run_tool(sele,data)
+
 
 @toollist.group(invoke_without_command=True)
 @click.pass_context
@@ -49,22 +74,7 @@ def tl(ctx):
         # no downstream is called. print the menu and let user run script.
         displayMenu(data)
         key = click.prompt('Enter Key',type=str)
-        if key in data:
-            name = data[key]['name']
-            command = data[key]['command']
-            click.echo(td(text=f"Run [{name}]\n>>> {{{command}}}"))
-            subprocess.run(command,shell=True)
-        else:
-            click.echo(td(title="",text=[[f"<a> '{key}' not in menu.</a>"]]))
-            return
-
-@tl.command()
-def test():
-    p=subprocess.Popen(["twine", "upload" ,"dist/*"],stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT, encoding='utf-8',)
-    # o = p.communicate("__token__\n")
-    # p.communicate("Fagoasdf\n")
-    # print(o)
+        return run_tool(key,data)
 
 @tl.command()
 @click.option('-a','--add','ops',flag_value='add', help="Add new command.")
