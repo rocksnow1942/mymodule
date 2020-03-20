@@ -43,7 +43,7 @@ def cli(inputs,precision):
 
     except Exception as e:
         result = [f"Formula : {formula}" , '<alert>Error {} </alert>'.format(e)]
-    line1 = f'  [计算] <f>{formula}</f>'
+    line1 = f'  [计算] <f>{"".join(inputs)}</f>'
     bkcolor = ColorText(mapping={"[]":"fGsB",("<f>","</f>"):"fMsB","{}":"bB",("<alert>","</alert>"):"bR"})
     tf = TableDisplay(bkcolor)
     data = tf(title=bkcolor('{>>>计算器<<<}'),text=[[line1],result])

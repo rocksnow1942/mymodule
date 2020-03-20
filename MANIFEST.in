@@ -1,0 +1,2 @@
+include cli/conf/tools.json
+include cli/plugins/*.py
