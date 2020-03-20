@@ -1,13 +1,17 @@
 import setuptools
-import cli
+
 
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open("cli/_version.py","r") as f:
+    _version = f.read().split('=')[1].strip(" \'\"")
+
+
 setuptools.setup(
     name="huik-module", # Replace with your own username this is for PIP install, not the real python package name. the real name will be example_pkg
-    version=cli.__version__,
+    version=_version,
     author="Hui Kang",
     author_email="rocksnow1942@gmail.com",
     description="Modules for my scripts.",
@@ -26,6 +30,7 @@ setuptools.setup(
         [console_scripts]
         ok=cli:menu
         tl=cli:toollist
+        fd=cli:folder
     """,
     install_requires=['psutil','click','colorama','terminaltables'],
     python_requires='>=3.6',

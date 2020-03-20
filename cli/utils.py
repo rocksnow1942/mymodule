@@ -1,9 +1,12 @@
-import re,os
+import re
 from colorama import init, Fore,Back,Style
 from textwrap import TextWrapper
 from terminaltables import SingleTable
+import subprocess 
 
-TermRow, TermCol = [int(i) for i in os.popen('stty size', 'r').read().split()]    
+WINDOWSIZE=[int(i) for i in subprocess.run('stty size', shell=True, stdout=subprocess.PIPE,encoding='utf-8').stdout.split()] 
+
+TermRow, TermCol =  WINDOWSIZE
 
 class ColorText():
     """

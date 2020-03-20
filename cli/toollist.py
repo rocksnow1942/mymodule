@@ -42,6 +42,7 @@ def run_tool(key,data):
         return
 
 
+
 @click.group(invoke_without_command=True)
 @click.pass_context
 def toollist(ctx):
@@ -50,8 +51,11 @@ def toollist(ctx):
     Use tl config [-ops] to configure.
     """
     if ctx._depth == 2:
-        tl()
-
+        data = readData()
+        # no downstream is called. print the menu and let user run script.
+        displayMenu(data)
+        key = click.prompt('Enter Key',type=str)
+        return run_tool(key,data)
 
 @toollist.command()
 @click.argument('sele',nargs=1,)
@@ -62,21 +66,7 @@ def rt(sele):
     data = readData()
     return run_tool(sele,data)
 
-
-@toollist.group(invoke_without_command=True)
-@click.pass_context
-def tl(ctx):
-    """
-    Tools menu
-    """
-    if ctx._depth == 2:
-        data = readData()
-        # no downstream is called. print the menu and let user run script.
-        displayMenu(data)
-        key = click.prompt('Enter Key',type=str)
-        return run_tool(key,data)
-
-@tl.command()
+@toollist.command()
 @click.option('-a','--add','ops',flag_value='add', help="Add new command.")
 @click.option('-d','--delete','ops',flag_value='delete',help="Delete a command.")
 @click.option('-e','--edit','ops',flag_value='edit',help="Edit a command.")
