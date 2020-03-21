@@ -18,6 +18,7 @@ def mk():
     """
     Mark folder to favorites.
     """
+    print(os.getcwd())
        
     pass 
 
