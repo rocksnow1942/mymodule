@@ -14,6 +14,7 @@ def cli(comment):
     msg = " ".join(comment)
     click.echo('\nGit pull')
     sub.run('git pull',shell=True,) 
+    click.echo('\nCommit to Git')
     if not msg:
         msg = click.prompt("Enter a comment",show_default=True,
             default=f"ON: {date.now().strftime('%c')}, FROM: {socket.gethostname()}")
