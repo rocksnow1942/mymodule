@@ -2,24 +2,12 @@ import click
 import os
 import json
 import subprocess
-from cli.utils import TermRow, TermCol, TableDisplay
+from cli.utils import TermRow, TermCol, TableDisplay, Config
 from mymodule import mkdirs
 
-TL_FOLDER = os.path.join(os.path.dirname(__file__), 'conf')
-TL_CONFIG = os.path.join(TL_FOLDER,'tools.json')
-
-mkdirs(TL_FOLDER)
-
-if not os.path.isfile(TL_CONFIG):
-    _=open(TL_CONFIG,'wt')
-    _.write("{}")
-    _.close()
+TL_CONFIG = Config('tools')
 
 td = TableDisplay()
-
-def readData():
-    with open(TL_CONFIG,'rt') as f:
-        return json.load(f)
     
 def displayMenu(data):
     dis = []
@@ -41,8 +29,6 @@ def run_tool(key,data):
         click.echo(td(title="",text=[[f"<a> '{key}' not in menu.</a>"]]))
         return
 
-
-
 @click.group(invoke_without_command=True)
 @click.pass_context
 def toollist(ctx):
@@ -51,7 +37,8 @@ def toollist(ctx):
     Use tl config [-ops] to configure.
     """
     if ctx._depth == 2:
-        data = readData()
+        # data = readData()
+        data = TL_CONFIG.readData()
         # no downstream is called. print the menu and let user run script.
         displayMenu(data)
         key = click.prompt('Enter Key',type=str)
@@ -63,7 +50,7 @@ def rt(sele):
     """
     Run option from tool list.
     """
-    data = readData()
+    data = TL_CONFIG.readData()
     return run_tool(sele,data)
 
 @toollist.command()
@@ -81,10 +68,10 @@ def config(ctx,ops):
         ctx.exit()
 
     if ops == "open":
-        subprocess.run(f"open {TL_CONFIG}",shell=True)
+        subprocess.run(f"open {TL_CONFIG.path}",shell=True)
         return
 
-    data = readData()
+    data = TL_CONFIG.readData()
     if ops == "add":
         click.echo("Add a New Command")
         name = click.prompt('Enter Command Name', type=str)
@@ -131,10 +118,8 @@ def config(ctx,ops):
                 data[temp]=data.pop(newkey)
             data[newkey]={'name':name,'command':command}
 
+    TL_CONFIG.saveData(data,indent=2)
     
-    with open(TL_CONFIG,'wt') as f:
-        json.dump(data,f,indent=2)
-
     click.echo(td(title="",text=f"<g> {ops.capitalize()} to '{name}' was saved.</g>"))
     
     
@@ -143,7 +128,3 @@ def config(ctx,ops):
 if __name__ == "__main__":
     toollist()
 
-
-    # killall ssh ;
-    # networksetup -setsocksfirewallproxystate Wi-Fi off ;
-    # echo Proxy OFF.

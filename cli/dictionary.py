@@ -1,22 +1,15 @@
 import click
 import os
 import requests
-from cli.utils import ColorText,TableDisplay
+from cli.utils import ColorText,TableDisplay,Config
 import json 
 import re
 
-
-APIs = os.path.join(os.path.dirname(__file__),'conf','api.json')
-if not os.path.isfile(APIs):
-    _=open(APIs,'wt')
-    _.write("{}")
-    _.close()
-
-with open(APIs,'rt') as f:
-    _data = json.load(f)
-    COL_API_KEY=_data.get("COL_API_KEY",None)
-    MED_API_KEY=_data.get("MED_API_KEY",None)
-    URBAN_API_KEY=_data.get("URBAN_API_KEY",None)
+APIs = Config('api')
+_data = APIs.readData()
+COL_API_KEY=_data.get("COL_API_KEY",None)
+MED_API_KEY=_data.get("MED_API_KEY",None)
+URBAN_API_KEY=_data.get("URBAN_API_KEY",None)
 
 def lookupMW(word,limit):
     url1=f"https://www.dictionaryapi.com/api/v3/references/collegiate/json/{word}?key={COL_API_KEY}"
@@ -78,9 +71,7 @@ def run_config():
     click.echo('You have entered these keys:')
     click.echo(json.dumps(data,indent=4),)
     if click.confirm('Do you want to save?',abort=True,default=True):
-        with open(APIs,'wt') as f:
-            json.dump(data,f)
-
+        APIs.saveData(data)
     click.echo('API keys are saved.')
 
 @click.group()

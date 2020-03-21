@@ -1,8 +1,9 @@
-import re
+import re,json,os
 from colorama import init, Fore,Back,Style
 from textwrap import TextWrapper
 from terminaltables import SingleTable
 import subprocess 
+from mymodule import mkdirs
 
 WINDOWSIZE=[int(i) for i in subprocess.run('stty size', shell=True, stdout=subprocess.PIPE,encoding='utf-8').stdout.split()] 
 
@@ -65,3 +66,33 @@ class TableDisplay():
 
     def __call__(self,title="",text=[]):
         return self.format(title,text)
+
+
+
+class Config():
+    """
+    Class to store and read saved configure data.
+    """
+    folder = os.path.join(os.path.dirname(__file__), 'conf')
+    def __init__(self,name):
+        self.name = name 
+        self.create()
+
+    def create(self):
+        mkdirs(self.folder)
+        if not os.path.isfile(self.path):
+            _=open(self.path,'wt')
+            _.write("{}")
+            _.close()
+        
+    @property
+    def path(self):
+        return os.path.join(self.folder,self.name+'.json')
+
+    def readData(self):
+        with open(self.path,'rt') as f:
+            return json.load(f)
+
+    def saveData(self,data,**kwargs):
+        with open(self.path,'wt') as f:
+            json.dump(data,f,**kwargs)
