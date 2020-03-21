@@ -8,7 +8,7 @@ from cli.utils import TableDisplay
 @click.argument("comment",nargs=-1,)
 def cli(comment):
     """
-    git pull, add . , commit -m 'comment', git push
+    git pull add commit push
     4 step in one.
     """
     msg = " ".join(comment)
