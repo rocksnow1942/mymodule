@@ -21,4 +21,4 @@ def cli(comment):
 
     result = sub.run('git config --get remote.origin.url',stdout=sub.PIPE,encoding='utf-8',shell=True).stdout
     td = TableDisplay()
-    click.echo(td(text=f"Commited to [{result.strip()}]"))
+    click.echo(td(title='>>> <g>! Success</g> <<<',text=f"Commited to [{result.strip()}]"))
