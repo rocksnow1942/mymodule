@@ -1,18 +1,1 @@
-{
-  "1": {
-    "name": "Turn ON SSH Proxy",
-    "command": "ssh ams-link.tplinkdns.com -p 37925  -D 8080  -N -f && networksetup -setsocksfirewallproxystate Wi-Fi on && echo Proxy ON"
-  },
-  "2": {
-    "name": "Turn OFF SSH Proxy",
-    "command": "killall ssh ; networksetup -setsocksfirewallproxystate Wi-Fi off ; echo Proxy OFF."
-  },
-  "3": {
-    "name": "SSH to Hui Razer",
-    "command": "ssh hui@68.6.106.82 -p 37925"
-  },
-  "4": {
-    "name": "SSH to server",
-    "command": "ssh ams-link.tplinkdns.com -l hui -p 37925"
-  }
-}
+{"1": {"name": "Turn ON SSH Proxy", "command": "ssh ams-link.tplinkdns.com -p 37925  -D 8080  -N -f && networksetup -setsocksfirewallproxystate Wi-Fi on && echo Proxy ON"}, "2": {"name": "Turn OFF SSH Proxy", "command": "killall ssh ; networksetup -setsocksfirewallproxystate Wi-Fi off ; echo Proxy OFF."}, "3": {"name": "SSH to Hui Razer", "command": "ssh hui@68.6.106.82 -p 37925"}, "4": {"name": "SSH to server", "command": "ssh ams-link.tplinkdns.com -l hui -p 37925"}, "v": {"name": "Activate virtual env", "command": "source venv/bin/activate; exec bash"}}

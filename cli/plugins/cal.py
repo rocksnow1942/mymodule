@@ -11,6 +11,9 @@ def cli(inputs,precision):
     """
     A big calculator.
     """
+    # precision handing:
+    precision = precision.strip('. ')
+
     formula = "".join(inputs)
     # replace log and ln
     formula = re.sub( "log\s*(?P<num>\d+)" , "math.log10(\g<num>)" , formula)

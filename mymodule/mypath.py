@@ -7,3 +7,4 @@ def mkdirs(*args):
     for p in args:
         if not os.path.isdir(p):
             os.mkdir(p) 
+    

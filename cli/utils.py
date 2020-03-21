@@ -19,7 +19,8 @@ class ColorText():
     _style={"D":"DIM","N":"NORMAL","B":"BRIGHT"}
     _mapping = {"f":_color,"s":_style,"b":_color}
     _type={'f':Fore,'b':Back,"s":Style}
-    def __init__(self,mapping={"[]":"fBsB","{}":"fR"}):
+    def __init__(self,mapping={"[]":"fC","{}":"bKfY",('<i>','</i>'):"fKbW", ("<g>","</g>") : "fG", ("<b>","</b>") : "fB", 
+                ("<r>","</r>") : "fR",("<m>","</m>") : "fM",("<y>","</y>") : "fY", ("<a>","</a>"):"bR",}):
         """
         mapping: { pattern : color }
         pattern: "[]"/"{}"/(<p>,</p>)
@@ -47,9 +48,12 @@ class ColorText():
 
 
 class TableDisplay():
-    def __init__(self,color=ColorText(mapping={"[]":"fC",("<g>","</g>") : "fG",("<a>","</a>"):"bR","{}":"bB"})):
+    def __init__(self,color=ColorText()):
         self.col = (TermCol)
-        self.color=color
+        if isinstance(color,dict):
+            self.color = ColorText(color)
+        else:
+            self.color=color
 
     def format(self,title="",text=[]):
         """
@@ -96,3 +100,13 @@ class Config():
     def saveData(self,data,**kwargs):
         with open(self.path,'wt') as f:
             json.dump(data,f,**kwargs)
+
+    @staticmethod
+    def list_config():
+        fd = Config.folder
+        mkdirs(fd)
+        res = []
+        for fn in os.listdir(fd):
+            if fn.endswith('.json'):
+                res.append(fn[:-5])
+        return res

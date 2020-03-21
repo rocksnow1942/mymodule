@@ -80,7 +80,6 @@ def plugins(ctx,show_folder,file):
     """
     Manage plugins folder
     """
-
     if show_folder:
         import subprocess
         click.echo(f"Plugins stored in: {plugin_folder}")

@@ -3,7 +3,6 @@ import os
 import json
 import subprocess
 from cli.utils import TermRow, TermCol, TableDisplay, Config
-from mymodule import mkdirs
 
 TL_CONFIG = Config('tools')
 
@@ -20,53 +19,48 @@ def run_tool(key,data):
     key is the key to command dictionary sotred in data dict. 
     data dict: key:{name: ... , command: ...}
     """
+    if not key:
+        click.echo(td(text="<y>No option selected.</y>"))
+        return
     if key in data:
         name = data[key]['name']
         command = data[key]['command']
-        click.echo(td(text=f"Run [{name}]\n>>> {{{command}}}"))
+        click.echo(td(text=f"Run [{name}]\n$ <i>{command}</i>"))
         subprocess.run(command,shell=True)
     else:
-        click.echo(td(title="",text=[[f"<a> '{key}' not in menu.</a>"]]))
+        click.echo(td(text=f" <r>'{key}'</r> <y>not in menu.</y>"))
         return
 
-@click.group(invoke_without_command=True)
-@click.pass_context
-def toollist(ctx):
-    """
-    Open up tools menu. 
-    Use tl config [-ops] to configure.
-    """
-    if ctx._depth == 2:
-        # data = readData()
-        data = TL_CONFIG.readData()
-        # no downstream is called. print the menu and let user run script.
-        displayMenu(data)
-        key = click.prompt('Enter Key',type=str)
-        return run_tool(key,data)
-
-@toollist.command()
-@click.argument('sele',nargs=1,)
-def r(sele):
-    """
-    Run option from tool list.
-    """
-    data = TL_CONFIG.readData()
-    return run_tool(sele,data)
-
-@toollist.command()
+@click.command()
 @click.option('-a','--add','ops',flag_value='add', help="Add new command.")
 @click.option('-d','--delete','ops',flag_value='delete',help="Delete a command.")
 @click.option('-e','--edit','ops',flag_value='edit',help="Edit a command.")
 @click.option('-o','--open','ops',flag_value='open',help="Open command configure in editor.")
+@click.argument('arg',nargs=-1,default=None)
 @click.pass_context
-def config(ctx,ops):
+def toollist(ctx,arg,ops):
+    """
+    Tools menu.\n
+    Directly invoke entry by tl [option key].\n
+    Configure tools list by add/edit/delete/open;
+    """
+    if ops:
+        return config(ops)
+    
+    data = TL_CONFIG.readData()
+    if not arg:
+        displayMenu(data)
+        key = click.prompt('Enter Key',default="",show_default=False)
+        return run_tool(key,data)
+
+    for key in arg:
+        run_tool(key,data)
+
+
+def config(ops):
     """
     To configure the tool list menu.
     """
-    if not ops:
-        click.echo(ctx.get_help())
-        ctx.exit()
-
     if ops == "open":
         subprocess.run(f"open {TL_CONFIG.path}",shell=True)
         return
