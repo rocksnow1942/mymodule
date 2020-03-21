@@ -46,7 +46,7 @@ def toollist(ctx):
 
 @toollist.command()
 @click.argument('sele',nargs=1,)
-def rt(sele):
+def r(sele):
     """
     Run option from tool list.
     """
