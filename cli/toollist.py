@@ -40,9 +40,9 @@ def run_tool(key,data):
 @click.pass_context
 def toollist(ctx,arg,ops):
     """
-    Tools menu.\n
-    Directly invoke entry by tl [option key].\n
-    Configure tools list by add/edit/delete/open;
+    Open Tools menu  by $ tl\n
+    Directly invoke tool list command by $ tl [command key].\n
+    Configure tools list by $ tl -a/-e/-d/-o.
     """
     if ops:
         return config(ops)

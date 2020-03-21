@@ -5,12 +5,13 @@ import subprocess
 from mymodule import mkdirs
 from cli.utils import TermRow, TermCol, TableDisplay, Config
 
-data = Config('folders')
-
-
+config = Config('folders')
 
 @click.group()
 def folder():
+    """
+    Open favorite folders by $ fd \n
+    """
     pass
 
 
