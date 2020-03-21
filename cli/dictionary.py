@@ -67,9 +67,11 @@ def run_config():
     ck = click.prompt("Enter Key for M-W collegiate dictionary",default=COL_API_KEY)
     mk = click.prompt("Enter Key for M-W medical dictionary",default=MED_API_KEY)
     uk = click.prompt("Enter Key for Urban dictionary",default=URBAN_API_KEY)
-    data = dict(COL_API_KEY=ck,MED_API_KEY=mk,URBAN_API_KEY=uk)
+    data = APIs.readData()
+    newdata = dict(COL_API_KEY=ck,MED_API_KEY=mk,URBAN_API_KEY=uk)
+    data.update(newdata)
     click.echo('You have entered these keys:')
-    click.echo(json.dumps(data,indent=4),)
+    click.echo(json.dumps(newdata,indent=4),)
     if click.confirm('Do you want to save?',abort=True,default=True):
         APIs.saveData(data)
     click.echo('API keys are saved.')

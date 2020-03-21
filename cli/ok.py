@@ -78,12 +78,18 @@ def import_config(ctx,param,value):
 def menu(ctx):
     "Main Entrance for plugins. And dictionary."
     pass
-    # if ctx._depth == 2:
-    #     click.echo(ctx.get_help())
-    #     ctx.exit()
+   
 
 @_plugins.command()
-def test():
+@click.option('--set-auth','auth',default=None,help="Set API for sync")
+@click.option('--upload','direction',flag_value='up',help="Upload settings.")
+@click.option('--download','direction',flag_value='down',help="Download settings.")
+@click.option('--plugin','option',flag_value='plugin',help="Sync plugins.")
+@click.option('--conf','option',flag_value='conf',help="Sync configuration.")
+def sync(auth,upload,download):
+    """
+    Sync plugins or config. 
+    """
     print('test inside ok')
 
 

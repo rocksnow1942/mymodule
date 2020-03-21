@@ -45,7 +45,8 @@ def toollist(ctx,arg,ops):
     Configure tools list by $ tl -a/-e/-d/-o.
     """
     if ops:
-        return config(ops)
+        config(ops)
+        ctx.exit()
     
     data = TL_CONFIG.readData()
     if not arg:
@@ -112,7 +113,7 @@ def config(ops):
                 data[temp]=data.pop(newkey)
             data[newkey]={'name':name,'command':command}
 
-    TL_CONFIG.saveData(data,indent=2)
+    TL_CONFIG.saveData(data)
     
     click.echo(td(title="",text=f"<g> {ops.capitalize()} to '{name}' was saved.</g>"))
     

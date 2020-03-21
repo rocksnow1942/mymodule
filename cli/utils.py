@@ -97,9 +97,9 @@ class Config():
         with open(self.path,'rt') as f:
             return json.load(f)
 
-    def saveData(self,data,**kwargs):
+    def saveData(self,data,):
         with open(self.path,'wt') as f:
-            json.dump(data,f,**kwargs)
+            json.dump(data,f,indent=2,)
 
     @staticmethod
     def list_config():

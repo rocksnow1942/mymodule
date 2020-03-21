@@ -78,7 +78,7 @@ def _plugins():
 @click.pass_context
 def plugins(ctx,show_folder,file):
     """
-    Manage plugins folder
+    Manage plugins. Show folder or install plugin.
     """
     if show_folder:
         import subprocess
