@@ -120,10 +120,10 @@ def update_Sync_settings(gist= None, auth=None ):
     data = config.readData()
     if gist is not None:
         data.update(gist=gist.strip())
-        click.echo(td(text=f"Saved Gist ID: [{gist}]."))
+        click.echo(td(text=f"Saved Gist ID: [<{gist}>]."))
     if auth is not None:
         data.update(auth=auth.strip())
-        click.echo(td(text=f"Saved auth: [{auth}]."))
+        click.echo(td(text=f"Saved auth: [<{auth}>]."))
     config.saveData(data)
 
 
@@ -180,7 +180,7 @@ def execute_sync(direction,option):
 
 
 @click.group(cls=click.CommandCollection)
-@click.option('--version','-V', is_flag=True, callback=print_version,
+@click.option('--version','-v', is_flag=True, callback=print_version,
               expose_value=False, is_eager=True,help='Show version.')
 @click.option('--export-config',type=click.Path(allow_dash=True,resolve_path=True), callback=export_config,
               expose_value=False, is_eager=True,help='Export config to a file.')
@@ -208,22 +208,9 @@ def sync(ctx,auth,direction,option,gist):
     """
     # for syncing: need gist, auth. if only gist, can download,
     showhelp = True
-    if auth or gist:
+    if (auth is not None) or (gist is not None):
         showhelp = False
         update_Sync_settings(auth=auth,gist=gist)
-    # if auth:
-    #
-    #     data = config.readData()
-    #     data.update(auth=auth)
-    #     config.saveData(data)
-    #     click.echo(td(text=f"Saved auth: [{auth}]."))
-    #
-    # if gist:
-    #     showhelp = False
-    #     data = config.readData()
-    #     data.update(gist=gist)
-    #     config.saveData(data)
-    #     click.echo(td(text=f"Saved gist ID: [{gist}]."))
 
     if direction:
         if not option:

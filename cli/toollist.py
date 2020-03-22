@@ -1,6 +1,8 @@
 import click
 import subprocess
 from cli.utils import  TableDisplay, Config
+from cli._version import __version__
+from cli.ok import print_version
 
 TL_CONFIG = Config('tools')
 
@@ -30,6 +32,8 @@ def run_tool(key,data):
         return
 
 @click.command()
+@click.option('--version','-v', is_flag=True, callback=print_version,
+              expose_value=False, is_eager=True,help='Show version.')
 @click.option('-a','--add','ops',flag_value='add', help="Add new command.")
 @click.option('-d','--delete','ops',flag_value='delete',help="Delete a command.")
 @click.option('-e','--edit','ops',flag_value='edit',help="Edit a command.")

@@ -7,11 +7,16 @@ from cli.utils import TableDisplay
 @click.command()
 @click.argument("comment",nargs=-1,)
 @click.option('--init','-i',help="Init git package with .gitignore and README.md")
-def cli(comment,init):
+@click.option('--javascript','-js','project',flag_value='json',help='Setup javascript .gitignore',default=True)
+@click.option('--python','-py','project',flag_value='python',help='Setup python .gitignore')
+def cli(comment,init,project):
     """
     git pull add commit push
     4 step in one.
     """
+    if init:
+        pass
+        return 
     msg = " ".join(comment)
     click.echo('\nGit pull')
     sub.run('git pull',shell=True,)
@@ -24,3 +29,5 @@ def cli(comment,init):
     result = sub.run('git config --get remote.origin.url',stdout=sub.PIPE,encoding='utf-8',shell=True).stdout
     td = TableDisplay()
     click.echo(td(title='>>> <g>! Success</g> <<<',text=f"Commited to [{result.strip()}]"))
+
+   
