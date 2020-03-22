@@ -79,6 +79,7 @@ def _plugins():
 def plugins(ctx,show_folder,file):
     """
     Manage plugins. Show folder or install plugin.
+    Call directly will show a list of all currently available plugins.
     """
     if show_folder:
         import subprocess
@@ -86,7 +87,6 @@ def plugins(ctx,show_folder,file):
         subprocess.run(f"cd {plugin_folder}\nopen .\n",shell=True)
         return 
     if file:
-        
         from shutil import copyfile
         from cli.cli import menu 
         cmds = (menu.list_commands(ctx))
