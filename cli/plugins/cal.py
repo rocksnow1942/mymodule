@@ -48,7 +48,7 @@ def cli(inputs,precision):
         result = [f"Formula : {formula}" , '<alert>Error {} </alert>'.format(e)]
     line1 = f'  [计算] <f>{"".join(inputs)}</f>'
     tf = TableDisplay({"[]":"fGsB",("<f>","</f>"):"fMsB","{}":"bB",("<alert>","</alert>"):"bR"})
-    data = tf(title=bkcolor('{>>>计算器<<<}'),text=[[line1],result])
+    data = tf(title='{>>>计算器<<<}',text=[[line1],result])
     click.echo('')
     click.echo(data)
     click.echo('')

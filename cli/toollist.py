@@ -1,13 +1,11 @@
 import click
-import os
-import json
 import subprocess
-from cli.utils import TermRow, TermCol, TableDisplay, Config
+from cli.utils import  TableDisplay, Config
 
 TL_CONFIG = Config('tools')
 
 td = TableDisplay()
-    
+
 def displayMenu(data):
     dis = []
     for k in sorted(data.keys()):
@@ -16,7 +14,7 @@ def displayMenu(data):
 
 def run_tool(key,data):
     """
-    key is the key to command dictionary sotred in data dict. 
+    key is the key to command dictionary sotred in data dict.
     data dict: key:{name: ... , command: ...}
     """
     if not key:
@@ -47,7 +45,7 @@ def toollist(ctx,arg,ops):
     if ops:
         config(ops)
         ctx.exit()
-    
+
     data = TL_CONFIG.readData()
     if not arg:
         displayMenu(data)
@@ -76,21 +74,22 @@ def config(ops):
         key = click.prompt('Enter Associated Key',type=str)
         click.echo(f"You Entered: {key}\n")
         if click.confirm('Do you want to save?',abort=True,default=True):
-            temp = key 
+            temp = key
             while temp in data:
                 temp+="d"
             if temp != key:
                 data[temp]=data.pop(key)
             data[key]={'name':name,'command':command}
-            
+
     elif ops == "delete":
         displayMenu(data)
-        key = click.prompt('Enter the command you wan to delete',type=str)
-        if key in data:
-            name = data.pop(key)['name']
-        else:
-            click.echo(td(title="",text=[[f"<a> '{key}' not in menu.</a>"]]))
-            return
+        keys = click.prompt('Enter the command you wan to delete',type=str)
+        for key in keys.split():
+            if key in data:
+                name = data.pop(key)['name']
+            else:
+                click.echo(td(title="",text=[[f"<a> '{key}' not in menu.</a>"]]))
+        return
     elif ops == 'edit':
         displayMenu(data)
         key = click.prompt('Enter the command you wan to edit',type=str)
@@ -106,7 +105,7 @@ def config(ops):
         click.echo(f"You Entered: {newkey}\n")
         if click.confirm('Do you want to save?',abort=True,default=True):
             data.pop(key)
-            temp = newkey 
+            temp = newkey
             while temp in data:
                 temp+="d"
             if temp != newkey:
@@ -114,12 +113,11 @@ def config(ops):
             data[newkey]={'name':name,'command':command}
 
     TL_CONFIG.saveData(data)
-    
+
     click.echo(td(title="",text=f"<g> {ops.capitalize()} to '{name}' was saved.</g>"))
-    
-    
+
+
 
 
 if __name__ == "__main__":
     toollist()
-

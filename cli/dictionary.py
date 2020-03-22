@@ -1,9 +1,7 @@
 import click
-import os
 import requests
 from cli.utils import ColorText,TableDisplay,Config
-import json 
-import re
+import json
 
 APIs = Config('api')
 _data = APIs.readData()
@@ -115,5 +113,3 @@ def _def(ctx,word,limit,dictionary,config):
         click.echo("")
         click.echo(bkcolor(f'<alert>!Unable to find online definition. \n <{result}> </alert>'))
         click.echo("")
-
-
