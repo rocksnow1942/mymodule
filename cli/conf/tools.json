@@ -22,5 +22,9 @@
   "twine": {
     "name": "Upload to PIP by twine",
     "command": "twine upload --skip-exist dist/*"
+  },
+  "av": {
+    "name": "Activate Virtual env",
+    "command": ". venv/bin/activate; exec bash"
   }
 }
