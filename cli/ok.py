@@ -188,7 +188,9 @@ def execute_sync(direction,option):
               expose_value=False, is_eager=True,help='Import config from a file.' )
 @click.pass_context
 def menu(ctx):
-    "Main Entrance for plugins. And dictionary."
+    """Main Entrance for plugins.\n
+    And export/import/sync configuration and plugins with Gighub gist.
+    """
     pass
 
 menu.sources = [_plugins, dictionary]
