@@ -143,7 +143,7 @@ def execute_sync(direction,option,sync_settings):
 
 
 @click.group(cls=click.CommandCollection)
-@click.option('--version', is_flag=True, callback=print_version,
+@click.option('--version','-V', is_flag=True, callback=print_version,
               expose_value=False, is_eager=True,help='Show version.')
 @click.option('--export-config',type=click.Path(allow_dash=True,resolve_path=True), callback=export_config,
               expose_value=False, is_eager=True,help='Export config to a file.')
