@@ -8,6 +8,7 @@ from mymodule import mkdirs
 from cli.plugins import plugin_folder
 import requests
 from datetime import datetime
+import socket
 
 td = TableDisplay()
 
@@ -82,7 +83,7 @@ def write_gist(data,auth,gist,settings):
                 "content": json.dumps(data,indent=2),
             },
             "OK_config_lastupdate" : {
-                "content": f'Last update time: {datetime.now().strftime("%c")}'
+                "content": f'UPDATE ON: {datetime.now().strftime("%c")}, FROM: {socket.gethostname()}'
             }
         }
     }
@@ -122,6 +123,12 @@ def import_config(ctx,param,value):
     ctx.exit()
 
 def execute_sync(direction,option,sync_settings):
+    """
+    run the sync according to user select.
+    direction: up or down 
+    option: conf or plugin 
+    sync_settings: dictionary for sync_settings.json, contain gist id and auth.
+    """
     gist = sync_settings.get('gist', None)
     if not gist:
         click.echo(
@@ -189,7 +196,7 @@ def sync(ctx,auth,direction,option,gist):
         if not option:
             pp = td(
                 text=f"No sync option specified. \nDo you want to sync <g>both plugin and conf</g>?") + '\n'
-            click.confirm(pp,default=False,abort=True)
+            click.confirm(pp,default=True,abort=True)
             execute_sync(direction,'plugin',data)
             execute_sync(direction,'conf',data)
         else:
