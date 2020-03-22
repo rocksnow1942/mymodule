@@ -1,4 +1,4 @@
-# This Repo is created by [OK git][huik]
+# huik-module Install from [PyPI][huik]
 [![python version](https://img.shields.io/badge/python-3.5%20%7C%203.6%20%7C%203.7%20-blue)][pythonwebsite] 
 [![Alt text](https://img.shields.io/pypi/v/huik-module 'Hover to see this text.')][huik]
 ### Emphasis
