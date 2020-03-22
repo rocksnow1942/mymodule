@@ -2,7 +2,7 @@ from cli._version import __version__
 import click
 from cli.plugins import _plugins
 from cli.dictionary import dictionary
-from cli.utils import Config, TableDisplay,ColorText
+from cli.utils import Config, TableDisplay
 import os,json
 from mymodule import mkdirs
 from cli.plugins import plugin_folder
@@ -18,12 +18,22 @@ def print_version(ctx, param, value):
     click.echo(__version__)
     ctx.exit()
 
+def print_settings(ctx, param, value):
+    if not value or ctx.resilient_parsing:
+        return
+    data = Config('sync_settings').readData()
+    td = TableDisplay(({"[]": "fG"}))
+    click.echo(td(title=">>> [Sync Settings] <<<",text=json.dumps(data,indent=2).strip('{}')))
+    ctx.exit()
+
+
+
 def export_config(ctx,param,path):
     if path is None or ctx.resilient_parsing:
         return
     result = extract_settings('conf')
     if path.endswith('-'):
-        newtd=TableDisplay(color=ColorText({"[]":"fC"}))
+        newtd=TableDisplay({"[]":"fC"})
         click.echo(newtd(title= ">>>[ Config Parameters ]<<<" ,text=json.dumps(result,indent=2).strip('{}') ))
     else:
         mkdirs(path)
@@ -109,11 +119,12 @@ def write_gist(data,auth,gist,settings):
                 click.echo(
                     td(text=f"<g>Successfully CREATED NEW</g> <y>{settings}</y> <g>settings!</g>\nGist @ [https://gist.github.com/{gist}]"))
         if res.status_code not in [200,201]:
-            jsontd = TableDisplay(color=ColorText({"[]": "fR"}))
+            jsontd = TableDisplay(({"[]": "fR"}))
             click.echo(jsontd(title=">>> [Sync failed with following response] <<<",
                           text=json.dumps(res.json(), indent=2).strip("{}")))
     except Exception as e:
         click.echo(td(title=">>> <r> ! Sync Failed </r><<<", text=f"{e}"))
+
 
 def update_Sync_settings(gist= None, auth=None ):
     config = Config('sync_settings')
@@ -197,6 +208,8 @@ menu.sources = [_plugins, dictionary]
 
 
 @_plugins.command()
+@click.option('--settings','-s', is_flag=True, callback=print_settings,
+              expose_value=False, is_eager=True,help='Show sync Gist ID and User token if exist.')
 @click.option('--set-auth','-sa','auth',default=None,help="Set Github Auth Token for sync.")
 @click.option('--set-gist','-sg','gist',default=None,help="Set Github Gist ID for sync.")
 @click.option('--upload','-u','direction',flag_value='up',help="Upload settings.")
