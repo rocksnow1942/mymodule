@@ -66,10 +66,9 @@ Basic structure:
 ```python
 import click 
 # other imports if needed 
-@click.command()
-# optionally use click.group() to allow multicommands.
-@click.option('--option')
-# other options or arguments.
+
+@click.command() # optionally use click.group() to allow multicommands.
+@click.option('--option') # add other options or arguments if needed.
 def cli(option):
     """
     Documents
