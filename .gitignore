@@ -1,13 +1,10 @@
 *.py[cod]
 __pycache__
-# C extensions
 *.so
 .env
 *.json
-.flaskenv
-# Packages
-*test.*
-*test*
+test*.*
+test*
 *.bak
 *.dat
 *.dir
@@ -25,32 +22,17 @@ develop-eggs
 .installed.cfg
 lib
 lib64
-__pycache__
 .DS_Store
-# Installer logs
 pip-log.txt
-
-# Unit test / coverage reports
 .coverage
 .tox
 nosetests.xml
 *.vscode
 *.code-workspace
-# Translations
 *.mo
-
-# Mr Developer
 .mr.developer.cfg
 .project
 .pydevproject
 .env
 venv
 logs
-migrations
-cache
-RNAstructure/
-ViennaRNA/
-NUPACK/
-nupack3.0.6
-general_equilibrium_formula.json
-tests
