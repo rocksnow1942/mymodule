@@ -93,7 +93,6 @@ def config(ops):
                 name = data.pop(key)['name']
             else:
                 click.echo(td(title="",text=[[f"<a> '{key}' not in menu.</a>"]]))
-        return
     elif ops == 'edit':
         displayMenu(data)
         key = click.prompt('Enter the command you wan to edit',type=str)
