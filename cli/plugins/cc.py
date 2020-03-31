@@ -10,49 +10,59 @@ import shutil
 
 @click.command()
 @click.option('--folder','-f',default=None,type=click.Path(exists=False, file_okay=False,resolve_path=True),help="Provide folder to clean.")
-def cli(folder):
-    "Clean residual files from icloud sync, using /.* [2-9]/ pattern"
+@click.option('--pattern','-p',default=None, help = "Use custom regex pattern to delete.")
+def cli(folder,pattern):
+    """
+    Clean files from a folder using regex pattern search.\n
+    Default using icloud sync duplicate pattern / [2-9]$/ .
+    """
     td=TableDisplay()
     folder = folder or click.prompt(td(text="Enter [path/to/folder] you want to clean:")+'\n', default=os.getcwd())
-    if os.path.isdir(folder):
+    pattern = pattern or click.prompt(td(text="Enter regex pattern:")+'\n', default=" [2-9]$") 
+    try:
+        pattern = re.compile(pattern)
+    except re.error as e:
+        click.echo(td(text=f"Regex compile error: <r>{e}</r>"))
+        return 
+    if os.path.isdir(folder):       
         click.echo(td(text=f'Cleaning folder [{folder}] ...'))
-        save , fileCount, folderCount= delete_stupid_apple_cloud_sync_2(folder)
+        save , fileCount, folderCount= delete_by_pattern(folder,pattern) 
         click.echo(td(title=">>> <g>Result</g> <<<",
             text=f'Cleaning Done.\n{{{fileCount}}} files\n{{{folderCount}}} folders\nMoved to [{save}].'))
     else:
-        click.echo(td(text=f"Path <r>{folder}</r> is not a valid."))
+        click.echo(td(text=f"Path <r>{folder}</r> is invalid."))
 
-def delete_stupid_apple_cloud_sync_2(path):
-    movedFiles = [] 
-    movedFolders = []
-    pattern = re.compile('.* [2-9]')
+def delete_by_pattern(path,pattern):
+    regex = pattern.pattern
+    movedFiles = 0
+    movedFolders = 0
     tempfolder = PurePath(path) / '!DELETE SCRIPT TEMP FOLDER'
     filepath = tempfolder / 'Deleted files'
     folderpath = tempfolder / 'Deleted folders'
     mkdirs(tempfolder,filepath,folderpath)
-    
+    f = open(tempfolder/'!Deletion Log.txt', 'a')
+    f.write(f'Start cleaning {path} on {datetime.now().strftime("%Y/%m/%d %H:%M")}\n')
+    f.write(f"Cleaning pattern: >{regex}<\n")
+    f.write('='*50+'\n')
     for root, dirs, files in os.walk(path):
         if str(tempfolder) in root:  # avoid looking into temp path.
             continue
-        move = bool(pattern.match(root)) # if the root is matched.
-        if move:
-            # shutil.rmtree(root)
+        if pattern.search(root):  # if the root folder is matched.
             relative = PurePath(root).relative_to(path)
-            print(f'Move Folder < {relative} >')
+            click.echo(f'Move [FOLDER] <{relative}>')
+            f.write(f'Move [FOLDER] <{root}>\n')
             shutil.move(root, folderpath / relative)
-            movedFolders.append(root)
+            movedFolders += 1
             continue
-
         for file in files:
-            if pattern.match(file):
-                print(f'Remove File < {file} >')
+            if pattern.search(file):
+                click.echo(f'Move [ FILE ] <{file}>')
+                f.write(f'Move [ FILE ] <{os.path.join(root, file)}>\n')
                 os.rename(os.path.join(root, file), filepath/file)
-                movedFiles.append(os.path.join(root, file))
-    with open(tempfolder/'!Deletion Log.txt', 'a') as f:
-        f.write(
-            f'Moved {len(movedFiles)} files, {len(movedFolders)} folders on {datetime.now().strftime("%Y/%m/%d %H:%M")}\n')
-        f.write('\n'.join(movedFiles))
-        f.write('\n'+'='*50+'\n')
-        f.write('\n'.join(movedFolders))
-        f.write('\n'*2)
-    return tempfolder, len(movedFiles), len(movedFolders)
+                movedFiles += 1 #.append(oas.path.join(root, file))
+
+    f.write('='*50+'\n')
+    f.write(
+        f'Moved {movedFiles} files, {movedFolders} folders, finished on {datetime.now().strftime("%Y/%m/%d %H:%M")}\n\n')
+    f.close()
+    return tempfolder, movedFiles, movedFolders
