@@ -63,7 +63,6 @@ class MyCLI(click.MultiCommand):
             cmd = command(*args, **kwargs)(f)
             self.add_command(cmd)
             return cmd
-
         return decorator
 
 
@@ -88,10 +87,9 @@ def plugins(ctx,show_folder,file):
         return 
     if file:
         from shutil import copyfile
-        from cli.cli import menu 
-        cmds = (menu.list_commands(ctx))
+        from cli.ok import menu
+        cmds = menu.list_commands(ctx)
         click.echo(f"Current commands: {cmds}")
-        
         name=click.prompt("Enter a different name for your plugin")
         if name in cmds:
             click.echo(f'!Failed. <{name}> is alread in use.')
