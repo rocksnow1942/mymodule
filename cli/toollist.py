@@ -14,6 +14,18 @@ def displayMenu(data):
         dis.append(f" >><g> [ {k} ] </g><< {data[k]['name']}  ")
     click.echo(td(title= "[>>Tools Menu<<]", text=[dis]))
 
+def displayCommand(data,items):
+    if not items: items = sorted(data.keys())
+    dis = []
+    for k in items:
+        if k in data:
+            dis.extend([f" >><g> [ {k} ] </g><< {data[k]['name']}", f" {data[k]['command']}"])
+        else:
+            dis.append(f" >><r> [ {k} ] </r><< is not in your tool list.")
+    click.echo(td(title= "[>>Tools Menu<<]", text=[dis]))
+
+
+
 def run_tool(key,data):
     """
     key is the key to command dictionary sotred in data dict.
@@ -38,19 +50,27 @@ def run_tool(key,data):
 @click.option('-d','--delete','ops',flag_value='delete',help="Delete a command.")
 @click.option('-e','--edit','ops',flag_value='edit',help="Edit a command.")
 @click.option('-o','--open','ops',flag_value='open',help="Open command configure in editor.")
+@click.option('-ls','ls',is_flag=True,help='List current commands.')
 @click.argument('arg',nargs=-1,default=None)
 @click.pass_context
-def toollist(ctx,arg,ops):
+def toollist(ctx,arg,ops,ls):
     """
     Open Tools menu  by $ tl\n
     Directly invoke tool list command by $ tl [command key].\n
     Configure tools list by $ tl -a/-e/-d/-o.
     """
+    
     if ops:
         config(ops)
         ctx.exit()
 
     data = TL_CONFIG.readData()
+
+    if ls: 
+        displayCommand(data,arg)
+        ctx.exit() 
+
+
     if not arg:
         displayMenu(data)
         key = click.prompt('Enter Key',default="",show_default=False)
@@ -58,6 +78,7 @@ def toollist(ctx,arg,ops):
 
     for key in arg:
         run_tool(key,data)
+        ctx.exit() 
 
 
 def config(ops):
