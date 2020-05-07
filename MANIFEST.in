@@ -1,1 +1,5 @@
 include cli/plugins/*.py
+include mymodule/ViennaRNA/*.*
+include mymodule/RNAstructure/*.*
+recursive-include mymodule/RNAstructure/data_tables * 
+
