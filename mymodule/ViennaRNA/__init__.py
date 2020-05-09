@@ -1,6 +1,7 @@
 """
 Simple How to Use By Hui
-To import: from mymodule import ViennaRNA
+To import:
+from mymodule import ViennaRNA
 
 set folding temperature:
 ViennaRNA.cvar.temperature=37

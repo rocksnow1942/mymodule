@@ -131,7 +131,6 @@ def call_with_file(args, cmd_input, outsuffix):
   p = sub.Popen(args, stdin=sub.PIPE, stdout=sub.PIPE,
                 stderr=sub.STDOUT, encoding='utf-8')
   p.communicate(cmd_input)
-
   ## Process and return output
   # Read output file and clean it up
   # Note that it was created by us, so it won't be cleaned up automatically
