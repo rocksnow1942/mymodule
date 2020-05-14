@@ -7,7 +7,7 @@ def revcomp(s):
     """
     # define the dic out side is much faster.    
     # comp = map(lambda x: REVSECOMPDICT[x], s[::-1]) # slightly slower
-    return seq.translate(REVERSETRANS)[::-1]
+    return s.translate(REVERSETRANS)[::-1]
 
 
 # def lev_distance(s1, s2, threshold=1000):
