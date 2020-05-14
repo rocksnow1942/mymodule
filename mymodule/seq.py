@@ -1,22 +1,13 @@
-REVSECOMPDICT = {'A': 'T',
-     'T': 'A',
-     'C': 'G',
-     'G': 'C',
-     'N': 'N',
-     'a': 'T',
-     't': 'A',
-     'c': 'G',
-     'g': 'C',
-     'n': 'N'}
+REVERSETRANS = str.maketrans("ACTGNactgn-", "TGACNtgacn-")
+
 
 def revcomp(s):
     """
     return reverse complement of a sequence.
     """
     # define the dic out side is much faster.    
-    comp = [REVSECOMPDICT[i] for i in s[::-1]]
     # comp = map(lambda x: REVSECOMPDICT[x], s[::-1]) # slightly slower
-    return ''.join(comp)
+    return seq.translate(REVERSETRANS)[::-1]
 
 
 # def lev_distance(s1, s2, threshold=1000):
