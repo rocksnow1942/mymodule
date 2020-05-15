@@ -141,9 +141,6 @@ mprint = MyPrint()
 class ProgressBar:
     """
     Class to display a progress bar, or pure count at a given frequency. 
-    """
-    def __init__(self,start=0,limits=None,interval=1,prefix='Progress',suffix="",decimals=2,length=None,frequency=0.1):
-        """
         start: the start progress in percentage 
         interval: the start number and end number if going to use intermediate number as input. 
         prefix, suffix: text to display. 
@@ -151,6 +148,10 @@ class ProgressBar:
         interval: interval of nupdate if using display_number
         frequency: update frequency in percentage.
         limits: the upper and lower limit of the iteration number to use. 
+    """
+    def __init__(self,start=0,limits=None,interval=1,prefix='Progress',suffix="",decimals=2,length=None,frequency=0.1):
+        """
+       
         """
         if WINDOWSIZE and length == None:
             TermRow, TermCol = WINDOWSIZE
