@@ -171,7 +171,6 @@ class ProgressBar:
 
     def __call__(self,value):
         "automatically determine what to use and use that for later. "
-       
         if value<1:
             return self.display_percent(value)
         else:
