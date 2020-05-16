@@ -4,6 +4,21 @@ import psutil
 import multiprocessing
 from itertools import product
 
+class LazyProperty():
+    """
+    lazy property descriptor class.
+    """
+    def __init__(self, func):
+        self.func = func
+
+    def __get__(self, instance, cls):
+        if instance is None:
+            return self
+        else:
+            value = self.func(instance)
+            setattr(instance, self.func.__name__, value)
+            return value
+
 class FT_Decorator():
     def __init__(self,freq=1,callback=None,show=True):
         self.freq = freq
