@@ -16,5 +16,5 @@ from .rotate_logger import FileLogger
 from .mypath import mkdirs
 from .seq import revcomp
 from .align import lev_distance, Alignment
-from .tool import ft, ft_decorator,FT_Decorator,poolMap, mprint, MyPrint,LazyProperty
+from .tool import ft, ft_decorator,FT_Decorator,poolMap, mprint, MyPrint,ProgressBar
 
