@@ -3,6 +3,9 @@ import timeit
 import psutil
 import multiprocessing
 from itertools import product
+import subprocess 
+WINDOWSIZE = [int(i) for i in subprocess.run(
+    'stty size', shell=True, stdout=subprocess.PIPE, encoding='utf-8').stdout.split()]
 
 class LazyProperty():
     """
@@ -148,3 +151,74 @@ class MyPrint:
             self.callback(msg)
    
 mprint = MyPrint()
+
+
+class ProgressBar:
+    """
+    Class to display a progress bar, or pure count at a given frequency. 
+        start: the start progress in percentage 
+        interval: the start number and end number if going to use intermediate number as input. 
+        prefix, suffix: text to display. 
+        length: length of the bar. 
+        interval: interval of nupdate if using display_number
+        frequency: update frequency in percentage.
+        limits: the upper and lower limit of the iteration number to use. 
+    """
+    def __init__(self,start=0,limits=None,interval=1,prefix='Progress',suffix="",decimals=2,length=None,frequency=0.1):
+        """
+       
+        """
+        if WINDOWSIZE and length == None:
+            TermRow, TermCol = WINDOWSIZE
+            length = int(TermCol*0.6)
+        else:
+            length = length or 100
+        self.prefix = prefix 
+        self.length = length 
+        self.suffix = suffix 
+        self.template = "\r{} |{}| {:." + str(decimals) + "%} {}"
+        self.progress = start
+        self.frequency = frequency / 100
+        self.interval = interval
+        self.limits = limits
+        self.default = None
+       
+
+    def __call__(self,value):
+        "automatically determine what to use and use that for later. "
+        if value<1:
+            return self.display_percent(value)
+        else:
+            return self.display_iteration(value)
+
+    def draw_bar(self):
+        filllength = int(self.length * max(min(self.progress, 1),0)) 
+        bar = '█'*filllength + '-'*(self.length - filllength)
+        print(self.template.format(self.prefix, bar, self.progress, self.suffix),end='\r')
+
+    def draw_number(self):
+       
+        num = "{:.0f} ".format(self.progress) 
+        bar = " "*(self.length - len(num)-1) + num 
+        print(f"\r{self.prefix} |{bar}| {self.suffix}",end='\r')
+
+    def display_percent(self,percent):
+        "give a percentage, display if its above the frequency."
+        if percent - self.progress >= self.frequency:
+            self.progress = percent 
+            self.draw_bar()
+
+    def display_iteration(self,iteration):
+        ""
+        if not self.limits: 
+            return self.display_number(iteration)
+        p = (iteration - self.limits[0]) / (self.limits[1] - self.limits[0])
+        return self.display_percent(p) 
+    
+    def display_number(self,number):
+        if number - self.progress >= self.interval:
+            self.progress = number
+            self.draw_number()
+            
+    def end_bar(self):
+        print()
