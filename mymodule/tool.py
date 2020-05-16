@@ -4,8 +4,7 @@ import psutil
 import multiprocessing
 from itertools import product
 import subprocess 
-WINDOWSIZE = [int(i) for i in subprocess.run(
-    'stty size', shell=True, stdout=subprocess.PIPE, encoding='utf-8').stdout.split()]
+
 
 class LazyProperty():
     """
@@ -165,9 +164,8 @@ class ProgressBar:
         limits: the upper and lower limit of the iteration number to use. 
     """
     def __init__(self,start=0,limits=None,interval=1,prefix='Progress',suffix="",decimals=2,length=None,frequency=0.1):
-        """
-       
-        """
+        WINDOWSIZE = [int(i) for i in subprocess.run(
+        'stty size', shell=True, stdout=subprocess.PIPE, encoding='utf-8').stdout.split()]
         if WINDOWSIZE and length == None:
             TermRow, TermCol = WINDOWSIZE
             length = int(TermCol*0.6)
