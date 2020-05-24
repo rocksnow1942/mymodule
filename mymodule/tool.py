@@ -155,15 +155,15 @@ mprint = MyPrint()
 class ProgressBar:
     """
     Class to display a progress bar, or pure count at a given frequency. 
-        start: the start progress in percentage 
-        interval: the start number and end number if going to use intermediate number as input. 
-        prefix, suffix: text to display. 
-        length: length of the bar. 
-        interval: interval of nupdate if using display_number
-        frequency: update frequency in percentage.
-        limits: the upper and lower limit of the iteration number to use. 
+        start: the start progress in percentage. default = 0 
+        limits: the upper and lower bound of the iteration count. Set this limits so that in later calls, can use the number of iteration to display progress percentage automatically.
+        prefix, suffix: text to display before and after the progress bar.
+        length: length of the bar, default to be 70% of the terminal window width.
+        percent_frequency: update frequency in percentage. default 0.1(%)
+        number_frequency: update frequency of number if the percentage of progress cannot be determined. default = 1.
     """
-    def __init__(self,start=0,limits=None,interval=1,prefix='Progress',suffix="",decimals=2,length=None,frequency=0.1):
+
+    def __init__(self, start=0, limits=None, prefix='Progress', suffix="", decimals=2, length=None, percent_frequency=0.1, number_frequency=1):
         WINDOWSIZE = [int(i) for i in subprocess.run(
         'stty size', shell=True, stdout=subprocess.PIPE, encoding='utf-8').stdout.split()]
         if WINDOWSIZE and length == None:
@@ -176,8 +176,8 @@ class ProgressBar:
         self.suffix = suffix 
         self.template = "\r{} |{}| {:." + str(decimals) + "%} {}"
         self.progress = start
-        self.frequency = frequency / 100
-        self.interval = interval
+        self.frequency = percent_frequency / 100
+        self.interval = number_frequency
         self.limits = limits
         self.default = None
        
@@ -190,12 +190,13 @@ class ProgressBar:
             return self.display_iteration(value)
 
     def draw_bar(self):
+        "draw the bar with length equal to self.length."
         filllength = int(self.length * max(min(self.progress, 1),0)) 
         bar = '█'*filllength + '-'*(self.length - filllength)
         print(self.template.format(self.prefix, bar, self.progress, self.suffix),end='\r')
 
     def draw_number(self):
-       
+        "draw a number equal to self.length."
         num = "{:.0f} ".format(self.progress) 
         bar = " "*(self.length - len(num)-1) + num 
         print(f"\r{self.prefix} |{bar}| {self.suffix}",end='\r')
@@ -207,16 +208,18 @@ class ProgressBar:
             self.draw_bar()
 
     def display_iteration(self,iteration):
-        ""
+        "give a iteration number, display the percentage of this number relative to the given iteration interval"
         if not self.limits: 
             return self.display_number(iteration)
         p = (iteration - self.limits[0]) / (self.limits[1] - self.limits[0])
         return self.display_percent(p) 
     
     def display_number(self,number):
+        "display a blunt number, incase the upper limit of this progress is unknown, thus unable to show progress percentage."
         if number - self.progress >= self.interval:
             self.progress = number
             self.draw_number()
             
     def end_bar(self):
+        "end the bar display. This should be called when you want to keep the bar displayed in terminal after it's done."
         print()
