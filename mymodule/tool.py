@@ -180,10 +180,14 @@ class ProgressBar:
         self.interval = number_frequency
         self.limits = limits
         self.default = None
+        self.iteration = 0 # start iteration
        
 
-    def __call__(self,value):
+    def __call__(self,value=None):
         "automatically determine what to use and use that for later. "
+        if value == None:
+            self.iteration += 1
+            value = self.iteration
         if value<1:
             return self.display_percent(value)
         else:

@@ -1,17 +1,22 @@
 import pickle,copy
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
 import numpy as np
-from itertools import product
-import matplotlib as mpl
-from matplotlib.text import TextPath
-from matplotlib.patches import PathPatch
-from matplotlib.font_manager import FontProperties
-import pandas as pd
-# import seaborn as sns
 from collections import Counter
-import scipy.stats as ss
-from Levenshtein import distance 
+from itertools import product
+try:
+    import matplotlib.pyplot as plt
+    from matplotlib.figure import Figure
+    import matplotlib as mpl
+    from matplotlib.text import TextPath
+    from matplotlib.patches import PathPatch
+    from matplotlib.font_manager import FontProperties
+    # import seaborn as sns
+    import scipy.stats as ss
+    from Levenshtein import distance 
+    import pandas as pd
+except Exception as e: 
+    pass
+
+
 
 
 # alignment module
