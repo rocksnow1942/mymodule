@@ -37,7 +37,8 @@ def cli(ctx,v):
                         click.echo(f)
                 if not click.confirm(f'{"More" if count>1 else "Less"} than one _version_.* file was found, ignore version and continue?',default=True,):
                     return 
-            if count==1:
+            else:
+                foundVersion=False
                 file,data = trueVersion[0]
                 data = data.split('\n')
                 for k,line in enumerate(data):
@@ -45,14 +46,19 @@ def cli(ctx,v):
                     if '__version__' in line:
                         m=p.search(line)
                         if m:
+                            foundVersion=True
                             ver = m.group()
                             verl = ver.split('.')
                             verl[-1] = str(int(ver.split('.')[-1])+1)
                             newver = '.'.join(verl)
                             data[k] = line.replace(ver,newver)
-                            click.echo(f"Update __version__ in {file} from <{ver}> to <{newver}> .")
-                with open(file,'wt') as f:
-                    f.write('\n'.join(data))
+                            if not click.confirm(f"Update __version__ in {file} from <{ver}> to <{newver}> ?", default=True):
+                                return
+                if foundVersion:
+                    with open(file,'wt') as f:
+                        f.write('\n'.join(data))
+                else:
+                    click.echo(f'No __version__ can be found in <{file}>.')
 
         click.echo('\nGit pull')
         sub.run('git pull',shell=True,)
