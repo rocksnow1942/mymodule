@@ -1,7 +1,7 @@
 import click
 import subprocess
 from cli.utils import  TableDisplay, Config
-from cli._version import __version__
+from cli._version_ import __version__
 from cli.ok import print_version
 
 TL_CONFIG = Config('tools')

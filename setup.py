@@ -5,7 +5,7 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open("cli/_version.py","r") as f:
+with open("cli/_version_.py","r") as f:
     _version = f.read().split('=')[1].strip(" \'\"")
 
 

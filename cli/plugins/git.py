@@ -1,16 +1,59 @@
+import os
 import click
 import subprocess as sub
 from datetime import datetime as date
 import socket
 from cli.utils import TableDisplay
+import re
 
 @click.group(invoke_without_command=True)
+@click.option('-v', is_flag=True,help='Use this flag to auto increment __version__ in __version__.* file.')
 @click.pass_context
-def cli(ctx):
+def cli(ctx,v):
     """
     git pull add commit push 4 step in one.
     """
     if ctx._depth == 2:
+        if v: 
+            versionfile=[]
+            for root,folder,files in os.walk(os.getcwd()):
+                for file in files:
+                    if file.split('.')[0]=='_version_':
+                        versionfile.append(os.path.join(root,file))
+            trueVersion = []
+            for f in versionfile:
+                try:
+                    data = open(f,'rt').read()
+                    if '__version__' in data:
+                        trueVersion.append((f,data))
+                except:
+                    pass
+
+            count = len(trueVersion)
+            if count>1 or count==0:
+                if count>1:
+                    click.echo(f"Found these __version__ files:")
+                    for f,d in trueVersion:
+                        click.echo(f)
+                if not click.confirm(f'{"More" if count>1 else "Less"} than one _version_.* file was found, ignore version and continue?',default=True,):
+                    return 
+            if count==1:
+                file,data = trueVersion[0]
+                data = data.split('\n')
+                for k,line in enumerate(data):
+                    p = re.compile('\d+\.\d+\.\d+')
+                    if '__version__' in line:
+                        m=p.search(line)
+                        if m:
+                            ver = m.group()
+                            verl = ver.split('.')
+                            verl[-1] = str(int(ver.split('.')[-1])+1)
+                            newver = '.'.join(verl)
+                            data[k] = line.replace(ver,newver)
+                            click.echo(f"Update __version__ in {file} from <{ver}> to <{newver}> .")
+                with open(file,'wt') as f:
+                    f.write('\n'.join(data))
+
         click.echo('\nGit pull')
         sub.run('git pull',shell=True,)
         click.echo('\nCommit to Git')

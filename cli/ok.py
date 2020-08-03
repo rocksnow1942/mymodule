@@ -1,4 +1,4 @@
-from cli._version import __version__
+from cli._version_ import __version__
 import click
 from cli.plugins import _plugins
 from cli.dictionary import dictionary
