@@ -1,4 +1,4 @@
-import os
+import os,json
 import click
 import subprocess as sub
 from datetime import datetime as date
@@ -16,10 +16,16 @@ def cli(ctx,v):
     if ctx._depth == 2:
         if v: 
             versionfile=[]
+            packagejson=[]
             for root,folder,files in os.walk(os.getcwd()):
                 for file in files:
+                    fullpath = os.path.join(root,file)
                     if file.split('.')[0]=='_version_':
-                        versionfile.append(os.path.join(root,file))
+                        versionfile.append(fullpath)
+                    elif file.strip() == 'package.json':
+                        if not ('node_modules' in root):
+                            packagejson.append(fullpath)
+
             trueVersion = []
             for f in versionfile:
                 try:
@@ -29,34 +35,53 @@ def cli(ctx,v):
                 except:
                     pass
 
-            count = len(trueVersion)
+            count = len(trueVersion) + len(packagejson)
             if count>1 or count==0:
                 if count>1:
                     click.echo(f"Found these __version__ files:")
                     for f,d in trueVersion:
                         click.echo(f)
+                    for f in packagejson:
+                        click.echo(f)
                 if not click.confirm(f'{"More" if count>1 else "Less"} than one _version_.* file was found, ignore version and continue?',default=True,):
                     return 
             else:
                 foundVersion=False
-                file,data = trueVersion[0]
-                data = data.split('\n')
-                for k,line in enumerate(data):
-                    p = re.compile('\d+\.\d+\.\d+')
-                    if '__version__' in line:
-                        m=p.search(line)
-                        if m:
-                            foundVersion=True
-                            ver = m.group()
-                            verl = ver.split('.')
-                            verl[-1] = str(int(ver.split('.')[-1])+1)
-                            newver = '.'.join(verl)
-                            data[k] = line.replace(ver,newver)
-                            if not click.confirm(f"Update __version__ in {file} from <{ver}> to <{newver}> ?", default=True):
-                                return
+                if trueVersion:
+                    file,data = trueVersion[0]
+                    data = data.split('\n')
+                    for k,line in enumerate(data):
+                        p = re.compile('\d+\.\d+\.\d+')
+                        if '__version__' in line:
+                            m=p.search(line)
+                            if m:
+                                foundVersion=True
+                                ver = m.group()
+                                verl = ver.split('.')
+                                verl[-1] = str(int(verl[-1])+1)
+                                newver = '.'.join(verl)
+                                data[k] = line.replace(ver,newver)
+                                
+                else:
+                    file = packagejson[0]
+                    with open(file,'rt') as f:
+                        data = json.load(f)
+                    ver = data['version']
+                    ov = ver.split('.')
+                    ov[-1] = str(int(ov[-1])+1)
+                    newver = '.'.join(ov)
+                    data['version'] = newver
+
+                    foundVersion=True
+
                 if foundVersion:
+                    if not click.confirm(f"Update __version__ in {file} from <{ver}> to <{newver}> ?", default=True):
+                        return
                     with open(file,'wt') as f:
-                        f.write('\n'.join(data))
+                        if trueVersion:
+                            f.write('\n'.join(data))
+                        else:
+                            json.dump(data,f,indent=2)
                 else:
                     click.echo(f'No __version__ can be found in <{file}>.')
 
