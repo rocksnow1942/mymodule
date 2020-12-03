@@ -2,12 +2,11 @@ import re,json,os
 from colorama import init, Fore,Back,Style
 from textwrap import TextWrapper
 from terminaltables import SingleTable
-import subprocess 
+
 from mymodule import mkdirs
 
-WINDOWSIZE=[int(i) for i in subprocess.run('stty size', shell=True, stdout=subprocess.PIPE,encoding='utf-8').stdout.split()] 
-
-TermRow, TermCol =  WINDOWSIZE
+# WINDOWSIZE=[int(i) for i in subprocess.run('stty size', shell=True, stdout=subprocess.PIPE,encoding='utf-8').stdout.split()] 
+TermCol , TermRow =  os.get_terminal_size()
 
 class ColorText():
     """
