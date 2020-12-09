@@ -90,9 +90,9 @@ def cli(ctx,v):
         click.echo('\nCommit to Git')
         msg = click.prompt("Enter a comment",show_default=True,
             default=f"ON: {date.now().strftime('%c')}, FROM: {socket.gethostname()}")
-        sub.check_call('git add .',shell=True)
-        sub.check_call(f'git commit -m "{msg}"',shell=True)
-        sub.check_call('git push',shell=True)
+        sub.run('git add .',shell=True)
+        sub.run(f'git commit -m "{msg}"',shell=True)
+        sub.run('git push',shell=True)
         # sub.run(f'git add . \n git commit -m "{msg}" \n git push',shell=True)
         result = sub.run('git config --get remote.origin.url',stdout=sub.PIPE,encoding='utf-8',shell=True).stdout
         td = TableDisplay()
