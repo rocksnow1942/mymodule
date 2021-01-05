@@ -66,13 +66,13 @@ def cli(ctx,v):
                     file = packagejson[0]
                     with open(file,'rt') as f:
                         data = json.load(f)
-                    ver = data['version']
-                    ov = ver.split('.')
-                    ov[-1] = str(int(ov[-1])+1)
-                    newver = '.'.join(ov)
-                    data['version'] = newver
-
-                    foundVersion=True
+                    ver = data.get('version',None)
+                    if ver:
+                        ov = ver.split('.')
+                        ov[-1] = str(int(ov[-1])+1)
+                        newver = '.'.join(ov)
+                        data['version'] = newver
+                        foundVersion=True
 
                 if foundVersion:
                     if not click.confirm(f"Update __version__ in {file} from <{ver}> to <{newver}> ?", default=True):
